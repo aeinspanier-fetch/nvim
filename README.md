@@ -68,8 +68,39 @@ The following files exist but are not currently loaded:
 - `<leader>fr` - Recent files
 
 ### Git
-- `<leader>gs` - Git status (Fugitive)
-- `<leader>gg` - LazyGit
+
+#### Status and Diffs
+- `<leader>gs` - Git status (shows staged/unstaged/untracked files)
+- `<leader>gd` - Git diff (view unstaged changes)
+- `<leader>gD` - Git diff staged (view staged changes)
+- `<leader>gl` - Git log (one-line format)
+
+#### Staging and Committing
+- `<leader>ga` - Git add current file
+- `<leader>gA` - Git add all files
+- `<leader>gc` - Git commit (opens commit message editor)
+
+#### Branches
+- `<leader>gb` - List all branches
+- `<leader>gB` - Create new branch (prompts for name)
+- `<leader>go` - Checkout branch (prompts for name)
+
+#### Remote Operations
+- `<leader>gp` - Git push
+- `<leader>gP` - Git pull
+
+#### Stashing
+- `<leader>gS` - Git stash (save changes)
+- `<leader>gU` - Git stash pop (restore changes)
+
+#### Git UI
+- `<leader>gg` - LazyGit (full terminal UI)
+- `<leader>tg` - LazyGit in terminal
+
+**Tips for Git Status view** (`<leader>gs`):
+- Press `s` on a file to stage/unstage
+- Press `cc` to commit
+- Press `=` to toggle inline diff view
 
 ### Terminal
 - `<leader>tt` - Toggle terminal
