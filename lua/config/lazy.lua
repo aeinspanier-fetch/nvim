@@ -45,6 +45,29 @@ local plugins = {
     },
     config = function()
       require("neo-tree").setup({
+        window = {
+          mappings = {
+            ["<space>"] = "none", -- Disable space in neo-tree to allow leader key to work
+            ["<cr>"] = "open",
+            ["o"] = "open",
+            ["S"] = "split_with_window_picker",
+            ["s"] = "vsplit_with_window_picker",
+            ["t"] = "open_tabnew",
+            ["C"] = "close_node",
+            ["z"] = "close_all_nodes",
+            ["R"] = "refresh",
+            ["a"] = "add",
+            ["A"] = "add_directory",
+            ["d"] = "delete",
+            ["r"] = "rename",
+            ["y"] = "copy_to_clipboard",
+            ["x"] = "cut_to_clipboard",
+            ["p"] = "paste_from_clipboard",
+            ["c"] = "copy",
+            ["m"] = "move",
+            ["q"] = "close_window",
+          },
+        },
         filesystem = {
           filtered_items = {
             visible = true, -- Show hidden files
@@ -73,8 +96,28 @@ local plugins = {
       { "<leader>gp", "<cmd>Git push<cr>", desc = "Git push" },
       { "<leader>gP", "<cmd>Git pull<cr>", desc = "Git pull" },
       { "<leader>gb", "<cmd>Git branch<cr>", desc = "Git branches" },
-      { "<leader>gB", ":Git checkout -b ", desc = "Create new branch" },
-      { "<leader>go", ":Git checkout ", desc = "Checkout branch" },
+      {
+        "<leader>gB",
+        function()
+          vim.ui.input({ prompt = "New branch name: " }, function(input)
+            if input and input ~= "" then
+              vim.cmd("Git checkout -b " .. input)
+            end
+          end)
+        end,
+        desc = "Create new branch",
+      },
+      {
+        "<leader>go",
+        function()
+          vim.ui.input({ prompt = "Branch name: " }, function(input)
+            if input and input ~= "" then
+              vim.cmd("Git checkout " .. input)
+            end
+          end)
+        end,
+        desc = "Checkout branch",
+      },
       { "<leader>gd", "<cmd>Git diff<cr>", desc = "Git diff" },
       { "<leader>gD", "<cmd>Git diff --staged<cr>", desc = "Git diff staged" },
       { "<leader>gl", "<cmd>Git log --oneline<cr>", desc = "Git log" },
