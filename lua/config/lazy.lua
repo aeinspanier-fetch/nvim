@@ -212,16 +212,15 @@ local plugins = {
 
 -- Claude Code integration
 table.insert(plugins, {
-  "chrishrb/claude.nvim",
+  "greggh/claude-code.nvim",
   lazy = false,
   keys = {
-    { "<leader>cc", "<cmd>Claude<cr>", desc = "Open Claude Chat" },
-    { "<leader>ca", mode = "v", "<cmd>ClaudeAsk<cr>", desc = "Ask Claude about selection" },
+    { "<leader>cc", "<cmd>ClaudeCodeToggle<cr>", desc = "Toggle Claude Code" },
   },
   config = function()
-    require("claude").setup({
-      -- You'll need to set your API key
-      -- api_key = os.getenv("CLAUDE_API_KEY"),
+    require("claude-code").setup({
+      -- Optional configuration
+      window_position = "right", -- or "left", "top", "bottom", "float"
     })
   end,
 })
