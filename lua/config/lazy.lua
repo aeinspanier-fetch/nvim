@@ -43,7 +43,17 @@ local plugins = {
     keys = {
       { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "NeoTree" },
     },
-    config = true,
+    config = function()
+      require("neo-tree").setup({
+        filesystem = {
+          filtered_items = {
+            visible = true, -- Show hidden files
+            hide_dotfiles = false, -- Don't hide dotfiles
+            hide_gitignored = false, -- Show gitignored files too
+          },
+        },
+      })
+    end,
   },
   
   -- Git
