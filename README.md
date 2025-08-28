@@ -1,5 +1,40 @@
 # Neovim Configuration
 
+## File Structure and Loading Sequence
+
+When Neovim starts, files are loaded in this specific order:
+
+1. **`init.lua`** - Entry point that orchestrates the entire configuration
+   - Requires `config.options` - Sets editor options (line numbers, tabs, etc.)
+   - Requires `config.lazy` - Bootstraps and configures the plugin manager
+   - Requires `config.keymaps` - Sets up custom keybindings
+   - Requires `config.terminal` - Configures terminal integration
+
+2. **`lua/config/options.lua`** - Basic Vim options
+   - Sets line numbers, relative numbers, tabs/spaces
+   - Configures search, clipboard, and UI settings
+   - Establishes core editor behavior before plugins load
+
+3. **`lua/config/lazy.lua`** - Plugin management
+   - Bootstraps lazy.nvim if not installed
+   - Defines all plugin specifications
+   - Manages plugin loading (immediate vs lazy-loaded)
+   - Configures each plugin's setup
+
+4. **`lua/config/keymaps.lua`** - Global keybindings
+   - Defines leader key and custom mappings
+   - Sets up window navigation and management
+   - Loaded after plugins to ensure commands are available
+
+5. **`lua/config/terminal.lua`** - Terminal configuration
+   - Sets up terminal-specific keybindings
+   - Configures shell integration
+
+### Unused Files
+The following files exist but are not currently loaded:
+- `lua/keymaps.lua`, `lua/plugins.lua`, `lua/settings.lua` - Orphaned configuration files
+- `after/` directory - Empty, reserved for post-plugin overrides
+
 ## Features
 
 - **Plugin Manager**: Lazy.nvim for efficient plugin loading
@@ -9,9 +44,10 @@
 - **Formatting**: Conform.nvim with support for multiple languages
 - **Fuzzy Finding**: Telescope with FZF backend
 - **Syntax Highlighting**: Tree-sitter
-- **Terminal Integration**: ToggleTerm with zsh support
-- **Claude Integration**: Claude.nvim for AI assistance
+- **Terminal Integration**: ToggleTerm
+- **AI Assistance**: Claude Code integration via claude-code.nvim
 - **Quick Navigation**: Harpoon for file marks
+- **History**: Undotree for visualizing undo history
 
 ## Key Bindings
 
@@ -22,9 +58,7 @@
 
 ### File Navigation
 - `<leader>e` - Toggle Neo-tree file explorer
-- `<leader>pv` - Open netrw
-- `-` - Open Oil.nvim (parent directory)
-- `<leader>cd` - Quick change directory
+- `-` - Open Oil.nvim (browse parent directory)
 
 ### Telescope (Fuzzy Finding)
 - `<leader>ff` - Find files
@@ -32,23 +66,17 @@
 - `<leader>fb` - Browse buffers
 - `<leader>fh` - Help tags
 - `<leader>fr` - Recent files
-- `/` - Fuzzy find in current buffer
 
 ### Git
 - `<leader>gs` - Git status (Fugitive)
 - `<leader>gg` - LazyGit
-- `<leader>gd` - Git diff
-- `<leader>gb` - Git blame
-- `]h` / `[h` - Navigate git hunks
 
 ### Terminal
 - `<leader>tt` - Toggle terminal
 - `<leader>tf` - Float terminal
 - `<leader>th` - Horizontal terminal
 - `<leader>tv` - Vertical terminal
-- `<leader>tc` - Open Claude Code in terminal
 - `<C-\>` - Toggle terminal (from any mode)
-- `<Esc><Esc>` - Exit terminal mode
 
 ### Harpoon (Quick File Access)
 - `<leader>a` - Add file to Harpoon
@@ -57,25 +85,15 @@
 
 ### Code Editing
 - `<leader>f` - Format buffer
-- `<leader>l` - Trigger linting
 - `<leader>u` - Toggle Undotree
 - `<leader>s` - Replace word under cursor
 
-### Claude AI
-- `<leader>cc` - Open Claude chat
-- `<leader>ca` - Ask Claude about selection (visual mode)
+### Claude Code AI
+- `<leader>cc` - Toggle Claude Code terminal window
 
 ### Window Management
-- `<leader>|` - Split vertical
-- `<leader>-` - Split horizontal
 - `<C-h/j/k/l>` - Navigate windows
-- `<C-Arrow>` - Resize windows
-
-### Tabs
-- `<leader><tab><tab>` - New tab
-- `<leader><tab>]` - Next tab
-- `<leader><tab>[` - Previous tab
-- `<leader><tab>d` - Close tab
+- `<C-Up/Down/Left/Right>` - Resize windows
 
 ## Required External Tools
 
@@ -84,24 +102,24 @@ For full functionality, install these tools:
 ```bash
 # Formatters
 npm install -g prettier
-pip install black stylua
-brew install shfmt
+pip install black
+brew install stylua
 
-# Linters
-npm install -g eslint_d
-pip install pylint
-brew install luacheck
-
-# Other
+# Other utilities
 brew install ripgrep fd lazygit
+
+# Claude Code CLI (if using claude-code.nvim)
+# Follow installation instructions at:
+# https://github.com/greggh/claude-code.nvim
 ```
 
-## Claude API Setup
+## Plugin Loading Strategy
 
-To use Claude integration, set your API key:
+Plugins are loaded in two ways:
+- **Immediate** (`lazy = false`): Loads at startup (e.g., colorscheme, claude-code.nvim)
+- **Lazy-loaded**: Loads on-demand via:
+  - `event`: On specific events (e.g., `BufReadPre`)
+  - `cmd`: When command is used (e.g., `:Telescope`)
+  - `keys`: When keybinding is pressed (e.g., `<leader>e` for Neo-tree)
 
-```bash
-export CLAUDE_API_KEY="your-api-key-here"
-```
-
-Add this to your shell configuration file (~/.zshrc or ~/.bashrc).
+This optimizes startup time by only loading plugins when needed.
